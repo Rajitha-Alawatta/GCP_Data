@@ -3,12 +3,8 @@ pipeline {
         environment {
             GIT_REPO = 'https://github.com/Rajitha-Alawatta/GCP_Data.git'
             REPO_FOLDER = 'GCP_Data'
-            OS = 'webserver-image'
-            IMAGE_NAME = "test-image"
-            PROJECT = "test-environment-262811"
-            SOURCE_VM = "base-vm"
-            SOURCE_DISK_ZONE = "us-central1-a"
-            STORAGE_LOCATION = "us"
+            TEST_PROJECT_ID = "test-environment-262811"
+            PROD_PROJECT_ID = "production-environment-327608"
             PRIVATE_KEY = '/home/jenkins/.ssh/id_rsa'
 
         }
@@ -25,7 +21,22 @@ pipeline {
                 sh "git clone ${GIT_REPO}"
             }
         }
-        stage('Create Image') {
+        stage('Set GCP Project - Test') {
+            steps {
+                sh "gcloud config set project ${TEST_PROJECT_ID}"
+            }
+        }
+        stage('Get VMs in Test Project') {
+            steps {
+                sh "gcloud compute instances list"
+            }
+        }
+        stage('Set GCP Project - Production') {
+            steps {
+                sh "gcloud config set project ${PROD_PROJECT_ID}"
+            }
+        }
+        stage('Get VMs in Production Project') {
             steps {
                 sh "gcloud compute instances list"
             }
